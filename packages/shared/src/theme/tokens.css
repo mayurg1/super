@@ -1,0 +1,54 @@
+/**
+ * SUPERCAMPUS design tokens — CSS custom properties.
+ * Imported once at app bootstrap via apps/web/src/styles/global.css
+ */
+:root,
+[data-theme='light'] {
+  --sc-font-sans: 'Inter', system-ui, sans-serif;
+  --sc-font-display: 'Outfit', system-ui, sans-serif;
+
+  --sc-purple: #7c3aed;
+  --sc-purple-light: #a78bfa;
+  --sc-purple-dark: #5b21b6;
+
+  --sc-bg: #f8f7fc;
+  --sc-surface: #ffffff;
+  --sc-surface-elevated: #ffffff;
+  --sc-border: #e5e7eb;
+
+  --sc-text: #111827;
+  --sc-text-secondary: #6b7280;
+  --sc-text-muted: #9ca3af;
+
+  --sc-success: #10b981;
+  --sc-warning: #f59e0b;
+  --sc-error: #ef4444;
+
+  --sc-radius-sm: 8px;
+  --sc-radius-md: 12px;
+  --sc-radius-lg: 16px;
+  --sc-radius-xl: 24px;
+
+  --sc-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --sc-shadow-md: 0 4px 12px rgba(124, 58, 237, 0.08);
+  --sc-shadow-lg: 0 8px 24px rgba(124, 58, 237, 0.12);
+
+  --sc-nav-height: 64px;
+  --sc-topbar-height: 56px;
+  --sc-touch-target: 44px;
+}
+
+[data-theme='dark'] {
+  --sc-bg: #0f0f14;
+  --sc-surface: #1a1a24;
+  --sc-surface-elevated: #22222e;
+  --sc-border: #2d2d3a;
+
+  --sc-text: #f3f4f6;
+  --sc-text-secondary: #9ca3af;
+  --sc-text-muted: #6b7280;
+
+  --sc-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --sc-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --sc-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+}

@@ -1,0 +1,7 @@
+# SUPERCAMPUS Supabase configuration.
+# Link the empty hosted project with `supabase link --project-ref <project-ref>`
+# before applying migrations. No project credentials are stored in this repository.
+project_id = "supercampus"
+
+[db]
+major_version = 17

@@ -1,0 +1,2 @@
+-- Dynamic bootstrap assignment: no UUIDs are stored in source control.
+insert into public.user_roles(user_id,role_id,campus_id,granted_by) select p.id,r.id,c.id,null from auth.users u join public.profiles p on p.id=u.id join public.roles r on r.key='super_admin' join public.campuses c on c.code='supercampus-main' where lower(u.email)='mayurrh999@gmail.com' on conflict(user_id,role_id,campus_id) do nothing;

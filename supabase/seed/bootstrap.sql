@@ -1,0 +1,3 @@
+-- Run seed files in this order through the Supabase CLI or CI seed runner:
+-- campuses.sql, departments.sql, programs.sql, roles.sql, permissions.sql,
+-- features.sql, role_permissions.sql, role_features.sql, demo_users.sql, verify.sql.

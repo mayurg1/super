@@ -1,0 +1,29 @@
+{
+  "name": "supercampus",
+  "private": true,
+  "version": "0.1.0",
+  "description": "SUPERCAMPUS — greenfield campus platform (supernew)",
+  "scripts": {
+    "dev": "pnpm --filter @supercampus/web dev",
+    "build": "pnpm -r build",
+    "typecheck": "pnpm --filter @supercampus/contracts build && pnpm --filter @supercampus/core build && pnpm --filter @supercampus/api-client build && pnpm --filter @supercampus/shared build && pnpm --filter @supercampus/supabase build && pnpm --filter @supercampus/web typecheck",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.28.0",
+    "eslint": "^9.28.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.20",
+    "globals": "^16.2.0",
+    "prettier": "^3.5.3",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.33.1"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "packageManager": "pnpm@9.15.0"
+}

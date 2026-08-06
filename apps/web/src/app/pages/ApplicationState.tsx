@@ -1,0 +1,3 @@
+import { Button, Card, Spinner } from '@supercampus/shared'; import { useApplication } from '../providers/ApplicationProvider';
+export function ApplicationLoadingScreen():React.ReactElement{return <div className="sc-auth-page"><Card padding="lg" className="sc-auth-card"><Spinner label="Preparing SUPERCAMPUS"/></Card></div>}
+export function ApplicationErrorScreen():React.ReactElement{const{error,retryInitialization}=useApplication();return <div className="sc-auth-page"><Card padding="lg" className="sc-auth-card"><h1 className="sc-auth-title">Unable to initialize</h1><p className="sc-auth-sub">{error??'Please try again.'}</p><Button fullWidth onClick={()=>void retryInitialization()}>Try again</Button></Card></div>}

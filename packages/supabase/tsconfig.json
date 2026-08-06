@@ -1,0 +1,5 @@
+{
+  "extends": "../../tooling/tsconfig/react.json",
+  "compilerOptions": { "outDir": "./dist", "rootDir": "./src", "noEmit": false, "composite": true },
+  "include": ["src/**/*"]
+}

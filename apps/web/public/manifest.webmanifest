@@ -1,0 +1,10 @@
+{
+  "name": "SUPERCAMPUS",
+  "short_name": "SUPERCAMPUS",
+  "description": "Your campus, reimagined.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8f7fc",
+  "theme_color": "#7C3AED",
+  "icons": []
+}
