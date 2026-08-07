@@ -5,6 +5,7 @@ export const ROUTES = {
   signup: '/signup',
   resetPassword: '/reset-password',
   onboarding: '/onboarding',
+  pendingApproval: '/pending-approval',
   marketFood: '/market/food',
   marketShop: '/market/shop',
   projects: '/projects',
@@ -19,6 +20,7 @@ export const ROUTES = {
   profile: '/profile',
   profileSettings: '/profile/settings',
   admin: '/admin',
+  adminRequests: '/admin/requests',
 } as const;
 
 export type RoutePath = (typeof ROUTES)[keyof typeof ROUTES];

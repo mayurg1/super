@@ -18,3 +18,37 @@ export { ProfileProvider, useProfile, type ProfileContextValue } from './profile
 export { createAuthorizationService, type AuthorizationFeature, type AuthorizationRole, type AuthorizationService, type AuthorizationSnapshot } from './authorization.js';
 export { AuthorizationProvider, useAuthorization, useCurrentCampus, useFeatures, useHasFeature, useHasPermission, usePermissions, useRoles, type AuthorizationContextValue } from './authorizationProvider.js';
 export { createFeedService, type CreateCommentInput, type CreatePostInput, type FeedAuthor, type FeedComment, type FeedCursor, type FeedMedia, type FeedMediaKind, type FeedPage, type FeedPost, type FeedQuery, type FeedResult, type FeedService, type FeedVisibility, type PostMediaInput, type UpdateCommentInput, type UpdatePostInput } from './feed.js';
+export { createMarketplaceService } from './marketplace.js';
+export type {
+  MarketplaceService,
+  MarketplaceProduct,
+  MarketplaceCategory,
+  MarketplaceSeller,
+  ProductMedia,
+  MarketplaceQuery,
+  MarketplaceCursor,
+  MarketplacePage,
+  MarketplaceResult,
+  MarketplaceStatus,
+  CreateProductInput,
+  UpdateProductInput,
+  ProductMediaInput,
+} from './marketplace.js';
+export { createFoodService } from './food.js';
+export type {
+  FoodService,
+  FoodVendor,
+  FoodMenuCategory,
+  FoodMenuItem,
+  FoodMenu,
+  FoodOrder,
+  FoodOrderItem,
+  FoodOrderStatus,
+  FoodPaymentStatus,
+  FoodFulfillmentType,
+  FoodOrderLineInput,
+  CreateFoodOrderInput,
+  FoodResult,
+} from './food.js';
+export { createRoleRequestService, type RoleRequest, type RoleRequestInput, type RoleRequestResult, type RoleRequestService, type RoleRequestStatus, type RoleRequestWithRole } from './roleRequests.js';
+export { RoleRequestsProvider, useRoleRequests, type RoleRequestsContextValue } from './roleRequestsProvider.js';

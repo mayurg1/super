@@ -415,3 +415,110 @@ button {
   margin-bottom: 24px;
   font-size: 14px;
 }
+
+/* ── Onboarding ── */
+.sc-onboarding-page { position: relative; }
+.sc-onboarding-topbar { position: absolute; top: 12px; right: 12px; display: flex; justify-content: flex-end; z-index: 5; }
+.sc-onboarding-steps { display:flex; gap:6px; justify-content:center; margin-bottom:18px; }
+.sc-step { display:inline-flex; align-items:center; justify-content:center; width:32px; height:32px; border-radius:50%; background:var(--sc-surface-elevated); border:1px solid var(--sc-border); filter:grayscale(1); opacity:.5; font-size:15px; }
+.sc-step.is-current { filter:none; opacity:1; border-color:var(--sc-purple); }
+.sc-step.is-done { filter:none; opacity:1; background:var(--sc-purple-light); }
+.sc-onboarding-body { display:flex; flex-direction:column; gap:14px; margin-bottom:18px; }
+.sc-onboarding-actions { display:flex; gap:10px; }
+.sc-role-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:10px; }
+.sc-role-option { display:flex; flex-direction:column; align-items:flex-start; gap:4px; padding:14px; border:1.5px solid var(--sc-border); border-radius:var(--sc-radius-md); background:var(--sc-surface); color:var(--sc-text); cursor:pointer; text-align:left; }
+.sc-role-option:hover { border-color:var(--sc-purple); }
+.sc-role-option.is-selected { border-color:var(--sc-purple); background:var(--sc-purple-light); color:#fff; }
+.sc-role-icon { font-size:24px; }
+.sc-role-option small { color:var(--sc-text-secondary); }
+
+/* ── Review list ── */
+.sc-review-list { display:flex; flex-direction:column; gap:2px; }
+.sc-review-list > div { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px 0; border-bottom:1px solid var(--sc-border); font-size:14px; }
+.sc-review-list span { color:var(--sc-text-secondary); }
+.sc-review-list strong { text-align:right; }
+
+/* ── Admin / status ── */
+.sc-badge { display:inline-block; padding:2px 10px; border-radius:999px; background:var(--sc-purple-light); color:#fff; font-size:12px; font-weight:600; text-transform:uppercase; }
+.sc-muted { color:var(--sc-text-secondary); font-size:13px; margin:4px 0 0; }
+.sc-text-error { color:var(--sc-error); }
+.sc-request-card { margin-bottom:12px; }
+.sc-request-meta { display:flex; align-items:center; gap:8px; margin-bottom:4px; }
+.sc-admin-actions { margin-top:12px; display:flex; flex-direction:column; gap:12px; }
+.sc-inline-actions { display:flex; gap:10px; justify-content:flex-end; }
+/* ── Food ── */
+.sc-food {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 16px;
+}
+.sc-food-heading h1 { font-size: 24px; }
+.sc-food-heading p { color: var(--sc-text-secondary); font-size: 14px; }
+.sc-food-vendors { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.sc-food-subtle { color: var(--sc-text-secondary); font-size: 14px; }
+.sc-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border: 1px solid var(--sc-border);
+  border-radius: 999px;
+  background: var(--sc-surface);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.sc-chip:hover { border-color: var(--sc-purple); background: var(--sc-purple-light); color: #fff; }
+.sc-chip-active { border-color: var(--sc-purple); background: var(--sc-purple); color: #fff; }
+.sc-link { color: var(--sc-purple); font-size: 13px; font-weight: 600; cursor: pointer; }
+.sc-link:disabled { opacity: 0.5; cursor: not-allowed; }
+.sc-link:hover:not(:disabled) { text-decoration: underline; }
+.sc-food-error { display: flex; flex-direction: column; gap: 6px; }
+.sc-food-main { display: flex; flex-direction: column; gap: 16px; }
+.sc-food-menu-head { display: flex; align-items: center; justify-content: space-between; }
+.sc-food-menu-head h2 { font-size: 18px; }
+.sc-food-category-title { font-size: 15px; margin: 12px 0 8px; }
+.sc-food-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+.sc-food-item { display: flex; flex-direction: column; gap: 6px; }
+.sc-food-item-head { display: flex; align-items: center; justify-content: space-between; }
+.sc-food-price { font-weight: 700; }
+.sc-food-item-actions { display: flex; align-items: center; gap: 8px; }
+.sc-food-item--unavailable { opacity: 0.5; }
+.sc-food-confirmation-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+.sc-food-confirmation {
+  background: var(--sc-surface);
+  border: 1px solid var(--sc-border);
+  border-radius: var(--sc-radius-md);
+  padding: 20px;
+  max-width: 90%;
+  text-align: center;
+}
+.sc-food-confirmation-actions { display: flex; gap: 10px; justify-content: center; margin-top: 16px; }
+.sc-food-cart h2 { font-size: 18px; margin-bottom: 8px; }
+.sc-food-cart-list { display: flex; flex-direction: column; gap: 8px; list-style: none; margin: 0; padding: 0; }
+.sc-food-cart-item { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.sc-food-cart-item-name { font-size: 14px; }
+.sc-food-cart-item-controls { display: flex; align-items: center; gap: 6px; }
+.sc-food-cart-item-controls input { width: 64px; }
+.sc-food-cart-item-price { font-weight: 700; font-size: 14px; }
+.sc-food-cart-totals { margin: 12px 0; }
+.sc-food-cart-totals dl { display: grid; grid-template-columns: auto 1fr; gap: 4px 8px; font-size: 13px; }
+.sc-food-cart-total { font-weight: 700; }
+.sc-food-inline-error { color: var(--sc-error); font-size: 13px; }
+.sc-food-cart-actions { display: flex; gap: 8px; justify-content: flex-end; }
+.sc-food-orders { display: flex; flex-direction: column; gap: 24px; }
+.sc-food-order-group-title { font-size: 16px; margin: 8px 0 8px; }
+.sc-food-order-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+.sc-food-order { display: flex; flex-direction: column; gap: 8px; }
+.sc-food-order-head { display: flex; justify-content: space-between; align-items: center; }
+.sc-food-order-status { font-size: 12px; text-transform: uppercase; color: var(--sc-text-secondary); }

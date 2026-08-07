@@ -7,7 +7,7 @@ import {
   loadClientEnv,
 } from '@supercampus/core';
 import { ThemeProvider } from '@supercampus/shared';
-import { AuthorizationProvider, AuthProvider, ProfileProvider, SupabaseProvider, createBrowserSupabaseClient, loadSupabaseEnv } from '@supercampus/supabase';
+import { AuthorizationProvider, AuthProvider, ProfileProvider, RoleRequestsProvider, SupabaseProvider, createBrowserSupabaseClient, loadSupabaseEnv } from '@supercampus/supabase';
 import { PlatformProvider } from './PlatformContext';
 import { ApplicationProvider } from './ApplicationProvider';
 import { NavigationProvider } from '../navigation/NavigationProvider';
@@ -47,9 +47,9 @@ export function AppProviders({ children }: AppProvidersProps): React.ReactElemen
       <SupabaseProvider client={platform.supabase}>
         <AuthProvider>
           <ProfileProvider>
-            <AuthorizationProvider><ApplicationProvider><NavigationProvider><DashboardProvider><PlatformProvider value={platform}>
+            <AuthorizationProvider><RoleRequestsProvider><ApplicationProvider><NavigationProvider><DashboardProvider><PlatformProvider value={platform}>
               <ThemeProvider onThemeChange={(theme) => platform.eventBus.emit('theme:changed', { theme })}>{children}</ThemeProvider>
-            </PlatformProvider></DashboardProvider></NavigationProvider></ApplicationProvider></AuthorizationProvider>
+            </PlatformProvider></DashboardProvider></NavigationProvider></ApplicationProvider></RoleRequestsProvider></AuthorizationProvider>
           </ProfileProvider>
         </AuthProvider>
       </SupabaseProvider>

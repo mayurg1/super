@@ -1,5 +1,5 @@
 import { type FormEvent, useState } from 'react';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ROUTES } from '@supercampus/core';
 import { useAuth } from '@supercampus/supabase';
 import { Button, Card, Input } from '@supercampus/shared';
@@ -28,4 +28,5 @@ export function ResetPasswordPage(): React.ReactElement {
   return <AuthCard title="Reset your password" subtitle="We’ll email you a secure reset link."><form onSubmit={submit}><Input label="Email" type="email" value={email} onChange={(e)=>setEmail(e.target.value)} error={error} autoComplete="email" required/><Button fullWidth type="submit" disabled={loading}>{loading?'Sending…':'Send reset link'}</Button></form>{notice?<p role="status">{notice}</p>:null}<p><Link to={ROUTES.login}>Back to sign in</Link></p></AuthCard>;
 }
 
-export function OnboardingPage(): React.ReactElement { return <Navigate to={ROUTES.home} replace />; }
+
+
