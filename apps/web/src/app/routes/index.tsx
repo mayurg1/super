@@ -4,8 +4,15 @@ import { ROUTES } from '@supercampus/core';
 import { Spinner } from '@supercampus/shared';
 import { ProtectedLayout, PublicRoute, RootRedirect } from './guards';
 import { FeedPage } from '../feed/FeedPage';
-import { MarketplacePage } from '../marketplace/MarketplacePage';
-import { FoodPage } from '../food/FoodPage';
+import { MarketPage } from '../market/MarketPage';
+import { DashboardPage } from '../dashboard/DashboardPage';
+import { ProductDetailPage } from '../marketplace/ProductDetailPage';
+import { ProjectsPage } from '../projects/ProjectsPage';
+import { ProjectDetailPage } from '../projects/ProjectDetailPage';
+import { MyProjectsPage } from '../projects/MyProjectsPage';
+import { ConnectPage } from '../connect/ConnectPage';
+import { ProfilePage } from '../profile/ProfilePage';
+import { SettingsPage } from '../profile/SettingsPage';
 
 const LoginPage = lazy(() => import('../pages/LoginPage').then((module) => ({ default: module.LoginPage })));
 const SignUpPage = lazy(() => import('../pages/LoginPage').then((module) => ({ default: module.SignUpPage })));
@@ -50,19 +57,16 @@ export const appRouter = createBrowserRouter([
     element: <ProtectedLayout />,
     children: [
       { path: ROUTES.home, element: <FeedPage /> },
-      { path: ROUTES.marketFood, element: <FoodPage /> },
-      { path: ROUTES.marketShop, element: <MarketplacePage /> },
-      { path: ROUTES.projects, element: placeholder('Projects', 'Projects feature ships in Phase 4.', '🚀') },
-      { path: ROUTES.projectsMine, element: placeholder('My Projects', 'Projects inbox ships in Phase 4.', '📁') },
-      { path: ROUTES.projectsCrowdfund, element: placeholder('Crowdfunding', 'Crowdfunding ships in Phase 4.', '💰') },
-      { path: ROUTES.connectAlumni, element: placeholder('Alumni Directory', 'Connect feature ships in Phase 4.', '🎓') },
-      { path: ROUTES.connectStudents, element: placeholder('Students', 'Connect feature ships in Phase 4.', '👥') },
-      { path: ROUTES.connectFaculty, element: placeholder('Faculty', 'Connect feature ships in Phase 4.', '👨🏫') },
-      { path: ROUTES.connectJobs, element: placeholder('Jobs', 'Jobs feature ships in Phase 4.', '💼') },
-      { path: ROUTES.connectEvents, element: placeholder('Events', 'Events feature ships in Phase 4.', '🎉') },
+      { path: ROUTES.dashboard, element: <DashboardPage /> },
+      { path: ROUTES.market, element: <MarketPage /> },
+      { path: ROUTES.marketShopDetail, element: <ProductDetailPage /> },
+      { path: ROUTES.projects, element: <ProjectsPage /> },
+      { path: ROUTES.projectDetail, element: <ProjectDetailPage /> },
+      { path: ROUTES.projectsMine, element: <MyProjectsPage /> },
+      { path: `${ROUTES.connect}/:tab?`, element: <ConnectPage /> },
       { path: ROUTES.hostel, element: placeholder('Hostel', 'Hostel feature ships in Phase 4.', '🏛️') },
-      { path: ROUTES.profile, element: placeholder('Profile', 'Profile feature ships in Phase 4.', '👤') },
-      { path: ROUTES.profileSettings, element: placeholder('Settings', 'Settings ships in Phase 4.', '⚙️') },
+      { path: ROUTES.profile, element: <ProfilePage /> },
+      { path: ROUTES.profileSettings, element: <SettingsPage /> },
       { path: ROUTES.admin, element: withSuspense(<AdminRequestsPage />) },
       { path: ROUTES.adminRequests, element: withSuspense(<AdminRequestsPage />) },
       { path: `${ROUTES.adminRequests}/:requestId`, element: withSuspense(<AdminRequestDetailPage />) },

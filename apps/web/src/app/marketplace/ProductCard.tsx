@@ -1,4 +1,6 @@
 import { Button, Card } from '@supercampus/shared';
+import { Link } from 'react-router-dom';
+import { ROUTES } from '@supercampus/core';
 import { useAuth, type MarketplaceProduct } from '@supercampus/supabase';
 import { useMarketplace } from './MarketplaceContext';
 
@@ -20,13 +22,27 @@ export function ProductCard({ product }: { product: MarketplaceProduct }): React
     <Card padding="md" className="sc-product-card">
       <div className="sc-product-card-header">
         <h3>{product.title}</h3>
-        <span className="sc-product-price">{formatPrice(product.price, product.currency)}</span>
+        <div className="sc-product-card-header-right">
+          <span className="sc-product-status">{product.status}</span>
+          <span className="sc-product-price">{formatPrice(product.price, product.currency)}</span>
+        </div>
       </div>
       <p className="sc-product-condition">{product.condition.replace('_', ' ')}</p>
       <p className="sc-product-description">{product.description}</p>
       <footer className="sc-product-card-footer">
-        <span className="sc-product-seller">{product.seller.displayName}</span>
+        <Link
+          to={ROUTES.profile}
+          className="sc-product-seller sc-product-seller-link"
+          aria-label={`View ${product.seller.displayName}'s profile`}
+        >
+          {product.seller.displayName}
+        </Link>
         <div className="sc-product-actions">
+          <Link to={`${ROUTES.market}/shop/${product.id}`}>
+            <Button variant="ghost" size="sm">
+              View
+            </Button>
+          </Link>
           <Button
             variant={product.favoritedByMe ? 'primary' : 'outline'}
             size="sm"

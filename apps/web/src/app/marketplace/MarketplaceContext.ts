@@ -7,6 +7,7 @@ export interface CreateProductFields {
   condition: string;
   price: number;
   categoryId?: string | null;
+  media?: readonly { assetId: string }[];
 }
 
 export interface UpdateProductFields {
@@ -30,10 +31,15 @@ export interface MarketplaceContextValue {
   refresh: () => Promise<void>;
   loadMore: () => Promise<void>;
   setCategory: (categoryId: string | null) => void;
+  getProduct: (productId: string) => Promise<MarketplaceProduct | null>;
   createProduct: (input: CreateProductFields) => Promise<boolean>;
   updateProduct: (productId: string, input: UpdateProductFields) => Promise<boolean>;
   deleteProduct: (productId: string) => Promise<boolean>;
   toggleFavorite: (productId: string) => Promise<boolean>;
+  reportProduct: (productId: string, reason: string) => Promise<boolean>;
+  hasReported: (productId: string) => Promise<boolean>;
+  uploadProductImages: (files: readonly File[]) => Promise<string[] | null>;
+  getMediaUrls: (assetIds: readonly string[]) => Promise<Record<string, string>>;
 }
 
 export const MarketplaceContext = createContext<MarketplaceContextValue | null>(null);

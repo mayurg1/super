@@ -1,21 +1,25 @@
 /** Canonical route paths — features register under these in Phase 4+. */
 export const ROUTES = {
   home: '/home',
+  dashboard: '/dashboard',
   login: '/login',
   signup: '/signup',
   resetPassword: '/reset-password',
   onboarding: '/onboarding',
   pendingApproval: '/pending-approval',
-  marketFood: '/market/food',
-  marketShop: '/market/shop',
+  market: '/market',
+  marketShopDetail: '/market/shop/:productId',
   projects: '/projects',
   projectsMine: '/projects/mine',
-  projectsCrowdfund: '/projects/crowdfund',
+  projectDetail: '/projects/:projectId',
+  connect: '/connect',
   connectAlumni: '/connect/alumni',
   connectStudents: '/connect/students',
   connectFaculty: '/connect/faculty',
   connectJobs: '/connect/jobs',
   connectEvents: '/connect/events',
+  connectJobDetail: '/connect/jobs/:jobId',
+  connectEventDetail: '/connect/events/:eventId',
   hostel: '/hostel',
   profile: '/profile',
   profileSettings: '/profile/settings',
@@ -24,52 +28,6 @@ export const ROUTES = {
 } as const;
 
 export type RoutePath = (typeof ROUTES)[keyof typeof ROUTES];
-
-export interface NavItem {
-  id: string;
-  label: string;
-  icon: string;
-  path: RoutePath;
-  requiredCapability?: string;
-}
-
-export const BOTTOM_NAV_ITEMS: NavItem[] = [
-  { id: 'home', label: 'Home', icon: '🏠', path: ROUTES.home, requiredCapability: 'feed:read' },
-  {
-    id: 'market',
-    label: 'Market',
-    icon: '🛒',
-    path: ROUTES.marketFood,
-    requiredCapability: 'marketplace:read',
-  },
-  {
-    id: 'projects',
-    label: 'Projects',
-    icon: '🚀',
-    path: ROUTES.projects,
-    requiredCapability: 'feed:read',
-  },
-  {
-    id: 'hostel',
-    label: 'Hostel',
-    icon: '🏛️',
-    path: ROUTES.hostel,
-    requiredCapability: 'hostel:outpass',
-  },
-  {
-    id: 'connect',
-    label: 'Connect',
-    icon: '👥',
-    path: ROUTES.connectAlumni,
-    requiredCapability: 'connect:read',
-  },
-  {
-    id: 'profile',
-    label: 'Profile',
-    icon: '👤',
-    path: ROUTES.profile,
-  },
-];
 
 export const PUBLIC_ROUTES: readonly string[] = [ROUTES.login, ROUTES.onboarding];
 
