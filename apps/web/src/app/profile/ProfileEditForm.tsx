@@ -22,6 +22,8 @@ export function ProfileEditForm({
   const [bio, setBio] = useState(profile.bio ?? '');
   const [graduationYear, setGraduationYear] = useState(profile.graduation_year ? String(profile.graduation_year) : '');
   const [visibility, setVisibility] = useState(profile.directory_visibility ?? 'campus');
+  // Residency (hostel gating): unset ('') => prompt user; 'day_scholar' | 'hosteller' once chosen.
+  const [residencyType, setResidencyType] = useState(profile.residency_type ?? '');
 
   const handleValid = HANDLE_RE.test(handle.trim());
   const valid = displayName.trim() !== '' && handleValid;
@@ -39,6 +41,7 @@ export function ProfileEditForm({
       bio,
       graduation_year: graduationYear ? Number(graduationYear) : null,
       directory_visibility: visibility,
+      residency_type: residencyType || null,
     };
     const ok = await onSave(changes);
     if (ok) onCancel();
@@ -70,6 +73,23 @@ export function ProfileEditForm({
               <option value="campus">Campus — your campus only</option>
               <option value="public">Public — everyone</option>
             </select>
+          </label>
+          <label className="sc-field">
+            <span className="sc-field-label">Residency status</span>
+            <select
+              className="sc-input"
+              value={residencyType}
+              onChange={(e) => setResidencyType(e.target.value)}
+            >
+              <option value="">— Select —</option>
+              <option value="day_scholar">Day Scholar — I commute to campus</option>
+              <option value="hosteller">Hostel Resident — I live in a campus hostel</option>
+            </select>
+            {!residencyType ? (
+              <span className="sc-field-label">
+                Set your residency to access hostel services (outpasses, complaints).
+              </span>
+            ) : null}
           </label>
         </div>
         <label className="sc-field">

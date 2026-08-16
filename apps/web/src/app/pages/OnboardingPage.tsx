@@ -1,17 +1,17 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { DEFAULT_CAMPUS_CODE, ROUTES } from '@supercampus/core';
-import { useProfile, useRoleRequests, useAuth, useSupabase } from '@supercampus/supabase';
+import { useProfile, useRoleRequests, useAuth, useSupabase, type ProfileUpdate } from '@supercampus/supabase';
 import { Button, Card, Input, Spinner } from '@supercampus/shared';
 import { useUserApplicationState } from '../providers/useUserApplicationState';
 
-type StepId = 'welcome' | 'profile' | 'academic' | 'role' | 'verification' | 'review';
+type StepId = 'welcome' | 'profile' | 'role' | 'academic' | 'verification' | 'review';
 
 const STEPS: { id: StepId; title: string; icon: string }[] = [
   { id: 'welcome', title: 'Welcome', icon: '👋' },
   { id: 'profile', title: 'Profile', icon: '👤' },
-  { id: 'academic', title: 'Academic', icon: '🎓' },
   { id: 'role', title: 'Role', icon: '🛡️' },
+  { id: 'academic', title: 'Academic', icon: '🎓' },
   { id: 'verification', title: 'Verification', icon: '✅' },
   { id: 'review', title: 'Review', icon: '📋' },
 ];
@@ -88,6 +88,14 @@ export function OnboardingPage(): React.ReactElement {
   const [displayName, setDisplayName] = useState('');
   const [bio, setBio] = useState('');
   const [graduationYear, setGraduationYear] = useState('');
+  // Residency (hostel gating): 'day_scholar' | 'hosteller' — required for new signups.
+  const [residencyType, setResidencyType] = useState('');
+    // Faculty / alumni / hostel_staff path field: free-text designation / post.
+  // For alumni this is labelled "Current work"; for hostel_staff it is "Position".
+  const [designation, setDesignation] = useState('');
+  // Vendor path fields.
+  const [phone, setPhone] = useState('');
+  const [businessName, setBusinessName] = useState('');
 
   // Role
   const [roleKey, setRoleKey] = useState('student');
@@ -151,17 +159,37 @@ export function OnboardingPage(): React.ReactElement {
     if (!campusId) { setError('Campus information is still loading. Please try again.'); return; }
     setSubmitting(true); setError(null);
     const year = graduationYear ? Number(graduationYear) : null;
+    const yearValid = year && year >= 1950 && year <= 2200 ? year : null;
     const display = displayName.trim() || `${givenName.trim()} ${familyName.trim()}`.trim();
-    const profileOk = await updateProfile({
+    const changes: ProfileUpdate = {
       campus_id: campusId,
       department_id: departmentId || null,
-      program_id: programId || null,
       given_name: givenName.trim() || null,
       family_name: familyName.trim() || null,
       display_name: display,
       bio,
-      graduation_year: year && year >= 1950 && year <= 2200 ? year : null,
-    });
+    };
+    if (isStudentPath) {
+      // Students: program + graduation year + residency accompany the department.
+      changes.program_id = programId || null;
+      changes.graduation_year = yearValid;
+      changes.residency_type = residencyType || null;
+    } else if (isAlumniPath) {
+      // Alumni: department + graduation year + current-work designation.
+      changes.graduation_year = yearValid;
+      changes.designation = designation.trim() || null;
+    } else if (isHostelStaffPath) {
+      // Hostel staff: position (designation) only.
+      changes.designation = designation.trim() || null;
+    } else if (isVendorPath) {
+      // Vendor: phone + business name only.
+      changes.phone = phone.trim() || null;
+      changes.business_name = businessName.trim() || null;
+    } else {
+      // faculty / campus_admin / moderator fallback: department + designation.
+      changes.designation = designation.trim() || null;
+    }
+    const profileOk = await updateProfile(changes);
     if (!profileOk) { setSubmitting(false); setError('Your profile could not be saved. Please try again.'); return; }
     await refreshProfile();
     const { data: role } = await client.from('roles').select('id,key').eq('key', roleKey).maybeSingle();
@@ -172,7 +200,67 @@ export function OnboardingPage(): React.ReactElement {
     navigate(ROUTES.pendingApproval, { replace: true });
   }
 
-  const profileComplete = Boolean(givenName.trim() && familyName.trim());
+    const profileComplete = Boolean(givenName.trim() && familyName.trim());
+
+  // The Academic step branches on the role chosen in the previous step.
+  //   student      -> Department, Program, Graduation Year, Residency
+  //   faculty      -> Department + Designation
+  //   alumni       -> Department + Graduation Year + Designation ("Current work")
+  //   hostel_staff -> Position (Designation) only
+  //   vendor       -> Phone + Business Name
+  //   campus_admin / moderator -> fall back to faculty-style (Department + Designation)
+  const isStudentPath = roleKey === 'student';
+  const isAlumniPath = roleKey === 'alumni';
+  const isHostelStaffPath = roleKey === 'hostel_staff';
+  const isVendorPath = roleKey === 'vendor';
+
+  const academicComplete = isStudentPath
+    ? Boolean(departmentId && programId && graduationYear && residencyType)
+    : isAlumniPath
+      ? Boolean(departmentId && graduationYear && designation.trim())
+      : isHostelStaffPath
+        ? Boolean(designation.trim())
+        : isVendorPath
+          ? Boolean(phone.trim() && businessName.trim())
+          : Boolean(departmentId && designation.trim());
+
+  const academicHint = isStudentPath
+    ? 'Complete your academic details — department, program, graduation year, and residency are required.'
+    : isAlumniPath
+      ? 'Select a department, graduation year, and current work.'
+      : isHostelStaffPath
+        ? 'Enter your position.'
+        : isVendorPath
+          ? 'Enter a phone number and business name.'
+          : 'Select a department and enter your designation.';
+
+  // Branch-aware summary rows reused by the Verification and Review steps.
+  const summaryFields = (): { label: string; value: string }[] => {
+    const showDepartment = !(isHostelStaffPath || isVendorPath);
+    const rows: { label: string; value: string }[] = [
+      { label: 'Name', value: displayName.trim() || `${givenName.trim()} ${familyName.trim()}`.trim() },
+    ];
+    if (showDepartment) {
+      rows.push({ label: 'Department', value: departments.find((d) => d.id === departmentId)?.name ?? '—' });
+    }
+    if (isStudentPath) {
+      rows.push({ label: 'Program', value: programs.find((p) => p.id === programId)?.name ?? '—' });
+      rows.push({ label: 'Graduation year', value: graduationYear || '—' });
+      rows.push({ label: 'Residency', value: residencyType === 'hosteller' ? 'Hostel Resident' : residencyType === 'day_scholar' ? 'Day Scholar' : '—' });
+    } else if (isAlumniPath) {
+      rows.push({ label: 'Graduation year', value: graduationYear || '—' });
+      rows.push({ label: 'Current work', value: designation.trim() || '—' });
+    } else if (isHostelStaffPath) {
+      rows.push({ label: 'Position', value: designation.trim() || '—' });
+    } else if (isVendorPath) {
+      rows.push({ label: 'Phone', value: phone.trim() || '—' });
+      rows.push({ label: 'Business name', value: businessName.trim() || '—' });
+    } else {
+      rows.push({ label: 'Designation', value: designation.trim() || '—' });
+    }
+    rows.push({ label: 'Requested role', value: ROLE_OPTIONS.find((r) => r.key === roleKey)?.label ?? roleKey });
+    return rows;
+  };
 
   const page = (children: ReactNode): React.ReactNode => (
     <div className="sc-auth-page sc-onboarding-page">
@@ -197,7 +285,7 @@ export function OnboardingPage(): React.ReactElement {
           {step === 'profile' ? (
             <Button fullWidth onClick={() => (profileComplete ? next() : setError('Enter at least a given and family name.'))} disabled={submitting}>Continue</Button>
           ) : step === 'academic' ? (
-            <Button fullWidth onClick={() => (departmentId && programId ? next() : setError('Select both a department and a program.'))} disabled={submitting}>Continue</Button>
+            <Button fullWidth onClick={() => (academicComplete ? next() : setError(academicHint))} disabled={submitting}>Continue</Button>
           ) : step === 'review' ? (
             <Button fullWidth onClick={() => void submit()} disabled={submitting || !campusId}>{submitting ? 'Submitting…' : 'Submit request'}</Button>
           ) : (
@@ -219,14 +307,6 @@ export function OnboardingPage(): React.ReactElement {
         <Input label="Display name (optional)" value={displayName} onChange={(e) => setDisplayName(e.target.value)} autoComplete="nickname" />
         <Input label="Bio (optional)" value={bio} onChange={(e) => setBio(e.target.value)} />
       </>)}</>;
-    case 'academic':
-      return <>{page(<>
-        <p className="sc-auth-sub">Add your academic details.</p>
-        {metaError ? <p className="sc-field-error" role="alert">{metaError}</p> : null}
-        <StepSelect label="Department" value={departmentId} onChange={setDepartmentId} options={departments} />
-        <StepSelect label="Program" value={programId} onChange={setProgramId} placeholder="Select a department first" options={programs} />
-        <Input label="Graduation year (optional)" type="number" min={1950} max={2200} value={graduationYear} onChange={(e) => setGraduationYear(e.target.value)} />
-      </>)}</>;
     case 'role':
       return <>{page(<>
         <p className="sc-auth-sub">Choose the role that best describes you.</p>
@@ -240,25 +320,78 @@ export function OnboardingPage(): React.ReactElement {
           ))}
         </div>
       </>)}</>;
+    case 'academic':
+      return <>{page(<>
+        <p className="sc-auth-sub">{isStudentPath ? 'Add your academic details.' : isVendorPath ? 'Tell us about your business.' : 'Add your professional details.'}</p>
+        {metaError ? <p className="sc-field-error" role="alert">{metaError}</p> : null}
+        {!isHostelStaffPath && !isVendorPath ? (
+          <StepSelect label="Department" value={departmentId} onChange={setDepartmentId} options={departments} />
+        ) : null}
+        {isStudentPath ? (
+          <>
+            <StepSelect label="Program" value={programId} onChange={setProgramId} placeholder="Select a department first" options={programs} />
+            <Input label="Graduation year (required)" type="number" min={1950} max={2200} value={graduationYear} onChange={(e) => setGraduationYear(e.target.value)} />
+            <div className="sc-field">
+              <span className="sc-field-label">Are you a day scholar or hostel resident?</span>
+              <div className="sc-role-grid">
+                <button
+                  type="button"
+                  aria-pressed={residencyType === 'day_scholar'}
+                  className={`sc-role-option${residencyType === 'day_scholar' ? ' is-selected' : ''}`}
+                  onClick={() => setResidencyType('day_scholar')}
+                >
+                  <span className="sc-role-icon" aria-hidden="true">🏠</span>
+                  <strong>Day Scholar</strong>
+                  <small>I commute to campus</small>
+                </button>
+                <button
+                  type="button"
+                  aria-pressed={residencyType === 'hosteller'}
+                  className={`sc-role-option${residencyType === 'hosteller' ? ' is-selected' : ''}`}
+                  onClick={() => setResidencyType('hosteller')}
+                >
+                  <span className="sc-role-icon" aria-hidden="true">🛏️</span>
+                  <strong>Hostel Resident</strong>
+                  <small>I live in a campus hostel</small>
+                </button>
+              </div>
+            </div>
+          </>
+        ) : null}
+        {isAlumniPath ? (
+          <Input label="Graduation year (required)" type="number" min={1950} max={2200} value={graduationYear} onChange={(e) => setGraduationYear(e.target.value)} />
+        ) : null}
+        {!isStudentPath && !isVendorPath ? (
+          <Input
+            label={isAlumniPath ? 'Current work' : isHostelStaffPath ? 'Position' : 'Designation / Post'}
+            value={designation}
+            onChange={(e) => setDesignation(e.target.value)}
+            placeholder={isAlumniPath ? 'e.g. Software Engineer @ Company' : isHostelStaffPath ? 'e.g. Warden, Assistant Warden' : 'e.g. Assistant Professor, HOD — AI & Data Science'}
+          />
+        ) : null}
+        {isVendorPath ? (
+          <>
+            <Input label="Phone" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="e.g. +1 555-0100" />
+            <Input label="Business name" value={businessName} onChange={(e) => setBusinessName(e.target.value)} placeholder="e.g. Campus Bookstore" />
+          </>
+        ) : null}
+      </>)}</>;
     case 'verification':
       return <>{page(<>
         <p className="sc-auth-sub">Confirm your details so an administrator can approve your request.</p>
         <div className="sc-review-list">
-          <div><span>Name</span><strong>{displayName.trim() || `${givenName} ${familyName}`.trim()}</strong></div>
-          <div><span>Department</span><strong>{departments.find((d) => d.id === departmentId)?.name ?? '—'}</strong></div>
-          <div><span>Program</span><strong>{programs.find((p) => p.id === programId)?.name ?? '—'}</strong></div>
-          <div><span>Requested role</span><strong>{ROLE_OPTIONS.find((r) => r.key === roleKey)?.label ?? roleKey}</strong></div>
+          {summaryFields().map((f) => (
+            <div key={f.label}><span>{f.label}</span><strong>{f.value}</strong></div>
+          ))}
         </div>
       </>)}</>;
     case 'review':
       return <>{page(<>
         <p className="sc-auth-sub">Review everything, then submit. An administrator will approve your role before you can continue.</p>
         <div className="sc-review-list">
-          <div><span>Name</span><strong>{displayName.trim() || `${givenName} ${familyName}`.trim()}</strong></div>
-          <div><span>Department</span><strong>{departments.find((d) => d.id === departmentId)?.name ?? '—'}</strong></div>
-          <div><span>Program</span><strong>{programs.find((p) => p.id === programId)?.name ?? '—'}</strong></div>
-          <div><span>Graduation year</span><strong>{graduationYear || '—'}</strong></div>
-          <div><span>Requested role</span><strong>{ROLE_OPTIONS.find((r) => r.key === roleKey)?.label ?? roleKey}</strong></div>
+          {summaryFields().map((f) => (
+            <div key={f.label}><span>{f.label}</span><strong>{f.value}</strong></div>
+          ))}
           <div><span>Campus</span><strong>{DEFAULT_CAMPUS_CODE}</strong></div>
         </div>
       </>)}</>;

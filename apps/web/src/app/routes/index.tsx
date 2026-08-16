@@ -13,6 +13,7 @@ import { MyProjectsPage } from '../projects/MyProjectsPage';
 import { ConnectPage } from '../connect/ConnectPage';
 import { ProfilePage } from '../profile/ProfilePage';
 import { SettingsPage } from '../profile/SettingsPage';
+import { HostelPage } from '../hostel/HostelPage';
 
 const LoginPage = lazy(() => import('../pages/LoginPage').then((module) => ({ default: module.LoginPage })));
 const SignUpPage = lazy(() => import('../pages/LoginPage').then((module) => ({ default: module.SignUpPage })));
@@ -30,9 +31,6 @@ const AdminRequestDetailPage = lazy(() =>
   import('../pages/AdminRequestDetailPage').then((module) => ({ default: module.AdminRequestDetailPage })),
 );
 const NotFoundPage = lazy(() => import('../pages/NotFoundPage').then((module) => ({ default: module.NotFoundPage })));
-const PlaceholderPage = lazy(() =>
-  import('../pages/PlaceholderPage').then((module) => ({ default: module.PlaceholderPage })),
-);
 
 function PageLoader(): React.ReactElement {
   return <Spinner label="Loading page" />;
@@ -40,10 +38,6 @@ function PageLoader(): React.ReactElement {
 
 function withSuspense(element: React.ReactNode): React.ReactElement {
   return <Suspense fallback={<PageLoader />}>{element}</Suspense>;
-}
-
-function placeholder(title: string, description: string, icon?: string): React.ReactElement {
-  return withSuspense(<PlaceholderPage title={title} description={description} icon={icon} />);
 }
 
 export const appRouter = createBrowserRouter([
@@ -64,7 +58,7 @@ export const appRouter = createBrowserRouter([
       { path: ROUTES.projectDetail, element: <ProjectDetailPage /> },
       { path: ROUTES.projectsMine, element: <MyProjectsPage /> },
       { path: `${ROUTES.connect}/:tab?`, element: <ConnectPage /> },
-      { path: ROUTES.hostel, element: placeholder('Hostel', 'Hostel feature ships in Phase 4.', '🏛️') },
+      { path: ROUTES.hostel, element: <HostelPage /> },
       { path: ROUTES.profile, element: <ProfilePage /> },
       { path: ROUTES.profileSettings, element: <SettingsPage /> },
       { path: ROUTES.admin, element: withSuspense(<AdminRequestsPage />) },

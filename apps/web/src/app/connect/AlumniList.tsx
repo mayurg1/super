@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Spinner } from '@supercampus/shared';
+import { EmptyState, Spinner } from '@supercampus/shared';
 import { ProfileCard } from './ProfileCard';
 import { createDirectoryService, useAuth, useSupabase, type DirectoryProfile } from '@supercampus/supabase';
 
@@ -30,6 +30,6 @@ export function AlumniList({ search, batch }: { search: string; batch: string | 
   });
 
   if (loading) return <Spinner label="Loading alumni" />;
-  if (filtered.length === 0) return <p className="sc-connect-empty">No alumni found.</p>;
+  if (filtered.length === 0) return <EmptyState icon="🎓" title="No alumni found" description="Try a different search or batch filter." />;
   return <div className="sc-connect-grid">{filtered.map((p) => <ProfileCard key={p.id} profile={p} />)}</div>;
 }

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Spinner } from '@supercampus/shared';
+import { EmptyState, Spinner } from '@supercampus/shared';
 import { ProfileCard } from './ProfileCard';
 import { createDirectoryService, useAuth, useSupabase, type DirectoryProfile } from '@supercampus/supabase';
 
@@ -19,6 +19,6 @@ export function FacultyList({ search }: { search: string }): React.ReactElement 
   const filtered = profiles.filter((p) => { return (p.displayName || '').toLowerCase().includes(q); });
 
   if (loading) return <Spinner label="Loading faculty" />;
-  if (filtered.length === 0) return <p className="sc-connect-empty">No faculty found.</p>;
+  if (filtered.length === 0) return <EmptyState icon="👨‍🏫" title="No faculty found" description="Try a different search." />;
   return <div className="sc-connect-grid">{filtered.map((p) => <ProfileCard key={p.id} profile={p} />)}</div>;
 }

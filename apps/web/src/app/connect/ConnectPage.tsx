@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Input, Spinner } from '@supercampus/shared';
+import { EmptyState, Input, Spinner } from '@supercampus/shared';
 import { useSupabase, useAuth } from '@supercampus/supabase';
 import { createDirectoryService, type DirectoryProfile } from '@supercampus/supabase';
 import { createJobService, type JobResult } from '@supercampus/supabase';
@@ -55,7 +55,7 @@ function TabContent({ tab, search, batch }: {
 
   if (tab === 'jobs') {
     const filtered = jobs.filter((j) => !q || j.title.toLowerCase().includes(q) || j.employer.toLowerCase().includes(q));
-    if (filtered.length === 0) return <p className="sc-connect-empty">No jobs found.</p>;
+    if (filtered.length === 0) return <EmptyState icon="💼" title="No jobs found" description="Try a different search." />;
     return (
       <div className="sc-product-grid">
         {filtered.map((j) => (
@@ -70,7 +70,7 @@ function TabContent({ tab, search, batch }: {
 
   if (tab === 'events') {
     const filtered = events.filter((e) => !q || e.title.toLowerCase().includes(q) || e.venue.toLowerCase().includes(q));
-    if (filtered.length === 0) return <p className="sc-connect-empty">No events found.</p>;
+    if (filtered.length === 0) return <EmptyState icon="🎉" title="No events found" description="Try a different search." />;
     return (
       <div className="sc-product-grid">
         {filtered.map((e) => (
@@ -89,7 +89,7 @@ function TabContent({ tab, search, batch }: {
     if (q && !(p.displayName || '').toLowerCase().includes(q)) return false;
     return true;
   });
-  if (filtered.length === 0) return <p className="sc-connect-empty">No {tab} found.</p>;
+  if (filtered.length === 0) return <EmptyState icon="👤" title={`No ${tab} found`} description="Try a different search or filter." />;
   return <div className="sc-connect-grid">{filtered.map((p) => <ProfileCard key={p.id} profile={p} />)}</div>;
 }
 

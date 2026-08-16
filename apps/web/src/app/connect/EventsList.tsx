@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Card, Spinner } from '@supercampus/shared';
+import { Card, EmptyState, Spinner } from '@supercampus/shared';
 import { createEventService, useAuth, useSupabase, type EventResult } from '@supercampus/supabase';
 
 export function EventsList({ search }: { search: string }): React.ReactElement {
@@ -18,7 +18,7 @@ export function EventsList({ search }: { search: string }): React.ReactElement {
   const filtered = events.filter((e) => !q || e.title.toLowerCase().includes(q) || e.venue.toLowerCase().includes(q));
 
   if (loading) return <Spinner label="Loading events" />;
-  if (filtered.length === 0) return <p className="sc-connect-empty">No events found.</p>;
+  if (filtered.length === 0) return <EmptyState icon="🎉" title="No events found" description="Try a different search." />;
   return (
     <div className="sc-product-grid">{filtered.map((e) => (
       <Card key={e.id} padding="md">

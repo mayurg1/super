@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Button } from '@supercampus/shared';
+import { Button, EmptyState } from '@supercampus/shared';
 import { createDirectoryService, useAuth, useSupabase } from '@supercampus/supabase';
 
 export function ConnectionRequestsCard(): React.ReactElement | null {
@@ -22,7 +22,7 @@ export function ConnectionRequestsCard(): React.ReactElement | null {
     return (
       <div className="sc-connect-requests">
         <h3>Connection Requests</h3>
-        <p className="sc-connect-empty">No requests</p>
+        <EmptyState icon="👥" title="No requests" />
       </div>
     );
   }

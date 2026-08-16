@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Card, Spinner } from '@supercampus/shared';
+import { Card, EmptyState, Spinner } from '@supercampus/shared';
 import { createJobService, useAuth, useSupabase, type JobResult } from '@supercampus/supabase';
 
 export function JobsList({ search }: { search: string }): React.ReactElement {
@@ -18,7 +18,7 @@ export function JobsList({ search }: { search: string }): React.ReactElement {
   const filtered = jobs.filter((j) => !q || j.title.toLowerCase().includes(q) || j.employer.toLowerCase().includes(q));
 
   if (loading) return <Spinner label="Loading jobs" />;
-  if (filtered.length === 0) return <p className="sc-connect-empty">No jobs found.</p>;
+  if (filtered.length === 0) return <EmptyState icon="💼" title="No jobs found" description="Try a different search." />;
   return (
     <div className="sc-product-grid">{filtered.map((j) => (
       <Card key={j.id} padding="md">

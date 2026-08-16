@@ -52,6 +52,17 @@ export type {
 } from './food.js';
 export { createRoleRequestService, type RoleRequest, type RoleRequestInput, type RoleRequestResult, type RoleRequestService, type RoleRequestStatus, type RoleRequestWithRole } from './roleRequests.js';
 export { RoleRequestsProvider, useRoleRequests, type RoleRequestsContextValue } from './roleRequestsProvider.js';
+export { createHostelService } from './hostel.js';
+export type {
+  ComplaintInput,
+  HostelComplaint,
+  HostelResult,
+  HostelService,
+  OutpassInput,
+  OutpassRequest,
+  ReviewComplaintStatus,
+  ReviewOutpassStatus,
+} from './hostel.js';
 export { createProjectService } from './projects.js';
 export type {
   ProjectService, ProjectResult, ProjectDetail, ProjectMemberProfile, ProjectSkill, ProjectQuery,

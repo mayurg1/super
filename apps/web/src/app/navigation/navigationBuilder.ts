@@ -24,7 +24,7 @@ export function buildNavigation(features:readonly AuthorizationFeature[]):Naviga
   } : null;
 
   const navItems = features
-    .filter(f => f.route && !f.route.startsWith('/connect') && !f.route.startsWith('/market') && !f.route.startsWith('/projects/crowdfund'))
+    .filter(f => f.route && !f.route.startsWith('/connect') && !f.route.startsWith('/market') && !f.route.startsWith('/projects/crowdfund') && f.key !== 'dashboard')
     .map(f => ({id:f.key,title:f.name,icon:f.icon??'•',route:f.route!,sortOrder:f.sortOrder,feature:f.key}));
 
   if (collapsedConnect) navItems.push(collapsedConnect);
