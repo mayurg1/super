@@ -9,18 +9,25 @@
     "typecheck": "pnpm --filter @supercampus/contracts build && pnpm --filter @supercampus/core build && pnpm --filter @supercampus/api-client build && pnpm --filter @supercampus/shared build && pnpm --filter @supercampus/supabase build && pnpm --filter @supercampus/web typecheck",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
+    "test": "vitest run",
+    "seed:demo": "node supabase/seed/demo-users.mjs",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
   "devDependencies": {
     "@eslint/js": "^9.28.0",
+    "@supabase/supabase-js": "^2.111.0",
+    "@testing-library/dom": "^10",
+    "@testing-library/react": "^16",
     "eslint": "^9.28.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.2.0",
+    "jsdom": "^26",
     "prettier": "^3.5.3",
     "typescript": "^5.8.3",
-    "typescript-eslint": "^8.33.1"
+    "typescript-eslint": "^8.33.1",
+    "vitest": "^3"
   },
   "engines": {
     "node": ">=20"

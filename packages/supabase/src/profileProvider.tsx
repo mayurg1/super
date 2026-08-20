@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactElement, type ReactNode } from 'react';
-import { createProfileService, type Profile, type ProfileUpdate } from './profile.js';
+import { createProfileService, PRIVACY_CONSENT_STORAGE_KEY, type Profile, type ProfileUpdate } from './profile.js';
 import { useAuth } from './authProvider.js';
 import { useSupabase } from './provider.js';
 
@@ -22,7 +22,16 @@ export function ProfileProvider({ children }: { children: ReactNode }): ReactEle
   const [loading, setLoading] = useState(false);
   const load = useCallback(async (): Promise<void> => {
     if (!user) { setProfile(null); return; }
-    setLoading(true); const result = await service.bootstrap(user); setProfile(result.data); setError(result.error); setLoading(false);
+    setLoading(true);
+    const result = await service.bootstrap(user);
+    let final = result;
+    // DPDP consent: stamp the profile the moment it exists for a consenting signup.
+    if (result.data && !result.data.privacy_consent_at && localStorage.getItem(PRIVACY_CONSENT_STORAGE_KEY) === '1') {
+      localStorage.removeItem(PRIVACY_CONSENT_STORAGE_KEY);
+      const stamped = await service.update(user.id, { privacy_consent_at: new Date().toISOString() });
+      if (stamped.data) final = stamped;
+    }
+    setProfile(final.data); setError(final.error); setLoading(false);
   }, [service, user]);
   useEffect(() => { if (!authenticated || !user) { setProfile(null); setLoading(false); return; } void load(); }, [authenticated, user, load]);
   const value = useMemo<ProfileContextValue>(() => ({

@@ -7,6 +7,7 @@ export const ROUTES = {
   resetPassword: '/reset-password',
   onboarding: '/onboarding',
   pendingApproval: '/pending-approval',
+  privacy: '/privacy',
   market: '/market',
   marketShopDetail: '/market/shop/:productId',
   projects: '/projects',
@@ -20,6 +21,9 @@ export const ROUTES = {
   connectEvents: '/connect/events',
   connectJobDetail: '/connect/jobs/:jobId',
   connectEventDetail: '/connect/events/:eventId',
+  connectProfile: '/connect/profile/:userId',
+  chat: '/chat',
+  chatConversation: '/chat/:conversationId',
   hostel: '/hostel',
   profile: '/profile',
   profileSettings: '/profile/settings',
@@ -29,7 +33,7 @@ export const ROUTES = {
 
 export type RoutePath = (typeof ROUTES)[keyof typeof ROUTES];
 
-export const PUBLIC_ROUTES: readonly string[] = [ROUTES.login, ROUTES.onboarding];
+export const PUBLIC_ROUTES: readonly string[] = [ROUTES.login, ROUTES.onboarding, ROUTES.privacy];
 
 export function isPublicRoute(pathname: string): boolean {
   return PUBLIC_ROUTES.some((route) => pathname === route || pathname.startsWith(`${route}/`));

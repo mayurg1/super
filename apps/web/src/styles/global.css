@@ -458,6 +458,47 @@ button {
   font-size: 14px;
 }
 
+/* ── Privacy notice page ── */
+.sc-privacy-card {
+  width: 100%;
+  max-width: 720px;
+}
+.sc-privacy-section {
+  margin: 0 0 18px;
+}
+.sc-privacy-section h2 {
+  font-size: 16px;
+  margin: 0 0 6px;
+}
+.sc-privacy-section p {
+  margin: 0;
+  color: var(--sc-text-secondary);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* ── Signup consent checkbox ── */
+.sc-consent-field {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 12px 0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.sc-consent-field input[type='checkbox'] {
+  width: 16px;
+  height: 16px;
+  margin-top: 1px;
+  accent-color: var(--sc-purple);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.sc-consent-field a {
+  color: var(--sc-purple);
+  text-decoration: underline;
+}
+
 /* ── Onboarding ── */
 .sc-onboarding-page { position: relative; }
 .sc-onboarding-topbar { position: absolute; top: 12px; right: 12px; display: flex; justify-content: flex-end; z-index: 5; }
@@ -501,6 +542,8 @@ button {
 .sc-food-heading p { color: var(--sc-text-secondary); font-size: 14px; }
 .sc-food-vendors { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .sc-food-subtle { color: var(--sc-text-secondary); font-size: 14px; }
+/* ── Coming-soon notes for payment-gated actions ── */
+.sc-coming-soon { color: var(--sc-text-secondary); font-size: 13px; }
 .sc-chip {
   display: inline-flex;
   align-items: center;
@@ -573,6 +616,7 @@ button {
 .sc-connect-tab { flex:1; display:flex; align-items:center; justify-content:center; gap:6px; white-space:nowrap; padding:10px 14px; text-align:center; border:none; border-radius:10px; background:none; cursor:pointer; font-size:14px; font-weight:500; color:var(--sc-text-secondary); font-family:var(--sc-font-sans); transition:all .15s; }
 .sc-connect-tab:hover:not(.active) { color:var(--sc-text); background:color-mix(in srgb, var(--sc-purple) 8%, transparent); }
 .sc-connect-tab.active { background:linear-gradient(135deg,var(--sc-purple),var(--sc-cyan)); color:#fff; font-weight:600; }
+.sc-connect-tab.sc-connect-tab-link { text-decoration:none; }
 .sc-connect-search-row { margin:8px 0; }
 .sc-connect-filter-row { display:flex; gap:6px; flex-wrap:wrap; margin:8px 0; }
 .sc-connect-chip { padding:6px 14px; border-radius:20px; border:1px solid var(--sc-border); background:var(--sc-bg); font-size:13px; cursor:pointer; color:var(--sc-text-secondary); transition:all .15s; }
@@ -681,3 +725,58 @@ button {
 .sc-badge-approved, .sc-badge-resolved, .sc-badge-success { background: var(--sc-success); }
 .sc-badge-rejected, .sc-badge-danger { background: var(--sc-error); }
 .sc-badge-assigned, .sc-badge-info { background: #2563eb; }
+/* ── Connect profile detail ───────────────────── */
+.sc-profile-detail { display: grid; gap: 16px; max-width: 760px; margin: 0 auto; }
+.sc-profile-detail-card { display: grid; gap: 14px; }
+.sc-profile-detail-hero { display: flex; align-items: center; gap: 16px; }
+.sc-profile-detail-avatar { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; flex: none; }
+.sc-profile-detail-avatar-fallback {
+  display: inline-flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, var(--sc-purple), var(--sc-cyan));
+  color: #fff; font-size: 28px; font-weight: 700;
+}
+.sc-profile-detail-identity { display: grid; gap: 2px; }
+.sc-profile-detail-name { margin: 0; font-size: 22px; }
+.sc-profile-detail-name-detail { margin: 0; color: var(--sc-text-secondary); font-size: 13px; }
+.sc-profile-detail-handle { margin: 0; color: var(--sc-text-secondary); font-size: 13px; }
+.sc-profile-detail-badges { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
+.sc-profile-detail-headline { margin: 0; font-weight: 600; color: var(--sc-text); }
+.sc-profile-detail-bio { margin: 0; color: var(--sc-text-secondary); white-space: pre-wrap; }
+.sc-profile-detail-facts { display: grid; gap: 8px; border-top: 1px solid var(--sc-border); padding-top: 12px; }
+.sc-profile-detail-facts div { display: flex; align-items: baseline; gap: 8px; font-size: 14px; }
+.sc-profile-detail-facts span { color: var(--sc-text-secondary); min-width: 100px; }
+.sc-profile-detail-actions { display: flex; gap: 12px; align-items: center; border-top: 1px solid var(--sc-border); padding-top: 12px; }
+.sc-chat-back { color: var(--sc-purple); text-decoration: none; font-size: 13px; }
+.sc-chat-back:hover { text-decoration: underline; }
+/* ── Chat ────────────────────────────────────── */
+.sc-chat { display: grid; gap: 16px; max-width: 760px; margin: 0 auto; }
+.sc-chat-title { margin: 0; font-size: 20px; }
+.sc-chat-list { display: grid; gap: 10px; }
+.sc-chat-list-item { text-decoration: none; color: inherit; }
+.sc-chat-list-card { display: flex; align-items: center; gap: 12px; }
+.sc-chat-list-avatar {
+  flex: none; width: 42px; height: 42px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, var(--sc-purple), var(--sc-cyan));
+  color: #fff; font-weight: 700;
+}
+.sc-chat-list-body { display: grid; gap: 2px; min-width: 0; }
+.sc-chat-list-top { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.sc-chat-list-time { color: var(--sc-text-secondary); font-size: 12px; }
+.sc-chat-list-preview { color: var(--sc-text-secondary); font-size: 13px; }
+.sc-chat-thread { display: flex; flex-direction: column; gap: 12px; max-width: 760px; margin: 0 auto; height: calc(100vh - 180px); }
+.sc-chat-thread-head { display: flex; align-items: baseline; gap: 14px; }
+.sc-chat-thread-title { margin: 0; font-size: 17px; }
+.sc-chat-messages { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding: 4px; }
+.sc-chat-message { display: flex; flex-direction: column; gap: 2px; max-width: 72%; }
+.sc-chat-message.is-mine { align-self: flex-end; align-items: flex-end; }
+.sc-chat-message:not(.is-mine) { align-self: flex-start; align-items: flex-start; }
+.sc-chat-bubble {
+  padding: 9px 12px; border-radius: 14px; font-size: 14px; line-height: 1.4;
+  background: var(--sc-surface); border: 1px solid var(--sc-border);
+}
+.sc-chat-message.is-mine .sc-chat-bubble { background: var(--sc-purple); color: #fff; border-color: transparent; }
+.sc-chat-message-time { color: var(--sc-text-secondary); font-size: 11px; }
+.sc-chat-composer { display: flex; gap: 8px; }
+.sc-chat-composer .sc-input { flex: 1; }
+.sc-chat-error { margin: 0; color: var(--sc-error); font-size: 13px; }

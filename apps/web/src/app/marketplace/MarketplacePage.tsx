@@ -4,7 +4,6 @@ import { CategoryFilter } from './CategoryFilter';
 import { ProductList } from './ProductList';
 
 function MarketplaceContent(): React.ReactElement {
-  console.log('MarketplaceContent rendered'); // TEMP TASK2
   return (
     <section className="sc-marketplace" aria-labelledby="marketplace-title">
       <header className="sc-marketplace-heading">
@@ -21,7 +20,6 @@ function MarketplaceContent(): React.ReactElement {
 }
 
 export function MarketplacePage(): React.ReactElement {
-  console.log('MarketplacePage rendered'); // TEMP TASK2
   return (
     <MarketplaceProvider>
       <MarketplaceContent />

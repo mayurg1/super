@@ -3176,6 +3176,7 @@ export type Database = {
           id: string
                     is_active: boolean
           phone: string | null
+          privacy_consent_at: string | null
           program_id: string | null
           residency_type: string | null
           updated_at: string
@@ -3201,6 +3202,7 @@ export type Database = {
           id: string
                     is_active?: boolean
           phone?: string | null
+          privacy_consent_at?: string | null
           program_id?: string | null
           residency_type?: string | null
           updated_at?: string
@@ -3226,6 +3228,7 @@ export type Database = {
           id?: string
                     is_active?: boolean
           phone?: string | null
+          privacy_consent_at?: string | null
           program_id?: string | null
           residency_type?: string | null
           updated_at?: string
@@ -4178,6 +4181,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      add_conversation_members: {
+        Args: { p_conversation_id: string; p_member_user_ids: string[] }
+        Returns: Json
+      }
       approve_role_request: { Args: { p_request_id: string }; Returns: Json }
       can_read_post: {
         Args: { p: Database["public"]["Tables"]["posts"]["Row"] }
@@ -4185,6 +4192,7 @@ export type Database = {
       }
       current_campus_id: { Args: never; Returns: string }
       current_profile_id: { Args: never; Returns: string }
+      get_directory_user_role: { Args: { p_user_id: string }; Returns: Json }
       has_feature: {
         Args: { feature_key: string; scope_campus_id?: string }
         Returns: boolean
@@ -4195,6 +4203,17 @@ export type Database = {
       }
       is_super_admin: { Args: never; Returns: boolean }
       is_valid_object_path: { Args: { value: string }; Returns: boolean }
+      prune_empty_direct_conversations: { Args: never; Returns: Json }
+      list_directory_profiles: {
+        Args: {
+          p_role: string
+          p_campus_id?: string
+          p_search?: string
+          p_before?: string
+          p_limit?: number
+        }
+        Returns: Json
+      }
       reject_role_request: {
         Args: { p_reason: string; p_request_id: string }
         Returns: Json

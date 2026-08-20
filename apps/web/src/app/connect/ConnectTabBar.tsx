@@ -1,7 +1,13 @@
+import { Link } from 'react-router-dom';
+import { ROUTES } from '@supercampus/core';
+import { useAuthorization } from '@supercampus/supabase';
+
 export function ConnectTabBar({ activeTab, onTabChange }: {
   activeTab: string;
   onTabChange: (tab: string) => void;
 }): React.ReactElement {
+  const { features } = useAuthorization();
+  const hasChat = features.some((f) => f.key === 'chat');
   const tabs = [
     { id: 'alumni', label: 'Alumni', icon: '🎓' },
     { id: 'students', label: 'Students', icon: '👥' },
@@ -19,6 +25,11 @@ export function ConnectTabBar({ activeTab, onTabChange }: {
           {t.icon} {t.label}
         </button>
       ))}
+      {hasChat && (
+        <Link to={ROUTES.chat} className="sc-connect-tab sc-connect-tab-link">
+          {'\u{1F4AC}'} Messages
+        </Link>
+      )}
     </div>
   );
 }

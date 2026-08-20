@@ -11,6 +11,8 @@ import { ProjectsPage } from '../projects/ProjectsPage';
 import { ProjectDetailPage } from '../projects/ProjectDetailPage';
 import { MyProjectsPage } from '../projects/MyProjectsPage';
 import { ConnectPage } from '../connect/ConnectPage';
+import { ProfileDetailPage } from '../connect/ProfileDetailPage';
+import { ChatPage } from '../chat/ChatPage';
 import { ProfilePage } from '../profile/ProfilePage';
 import { SettingsPage } from '../profile/SettingsPage';
 import { HostelPage } from '../hostel/HostelPage';
@@ -21,6 +23,9 @@ const ResetPasswordPage = lazy(() =>
   import('../pages/LoginPage').then((module) => ({ default: module.ResetPasswordPage })),
 );
 const OnboardingPage = lazy(() => import('../pages/OnboardingPage').then((module) => ({ default: module.OnboardingPage })));
+const PrivacyPolicyPage = lazy(() =>
+  import('../pages/PrivacyPolicyPage').then((module) => ({ default: module.PrivacyPolicyPage })),
+);
 const PendingApprovalPage = lazy(() =>
   import('../pages/PendingApprovalPage').then((module) => ({ default: module.PendingApprovalPage })),
 );
@@ -45,6 +50,7 @@ export const appRouter = createBrowserRouter([
   { path: ROUTES.login, element: <PublicRoute>{withSuspense(<LoginPage />)}</PublicRoute> },
   { path: ROUTES.signup, element: <PublicRoute>{withSuspense(<SignUpPage />)}</PublicRoute> },
   { path: ROUTES.resetPassword, element: <PublicRoute>{withSuspense(<ResetPasswordPage />)}</PublicRoute> },
+  { path: ROUTES.privacy, element: withSuspense(<PrivacyPolicyPage />) },
   { path: ROUTES.onboarding, element: withSuspense(<OnboardingPage />) },
   { path: ROUTES.pendingApproval, element: withSuspense(<PendingApprovalPage />) },
   {
@@ -57,7 +63,10 @@ export const appRouter = createBrowserRouter([
       { path: ROUTES.projects, element: <ProjectsPage /> },
       { path: ROUTES.projectDetail, element: <ProjectDetailPage /> },
       { path: ROUTES.projectsMine, element: <MyProjectsPage /> },
+      { path: ROUTES.connectProfile, element: <ProfileDetailPage /> },
       { path: `${ROUTES.connect}/:tab?`, element: <ConnectPage /> },
+      { path: ROUTES.chat, element: <ChatPage /> },
+      { path: ROUTES.chatConversation, element: <ChatPage /> },
       { path: ROUTES.hostel, element: <HostelPage /> },
       { path: ROUTES.profile, element: <ProfilePage /> },
       { path: ROUTES.profileSettings, element: <SettingsPage /> },

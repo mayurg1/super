@@ -34,7 +34,6 @@ const empty = (campusId: string | null): AuthorizationSnapshot => ({
   campusId,
 });
 
-/** TEMP INSTRUMENTATION — authorization load diagnostics. */
 export function createAuthorizationService(client: SupercampusSupabaseClient) {
   return {
     async load(
@@ -43,23 +42,20 @@ export function createAuthorizationService(client: SupercampusSupabaseClient) {
       refresh = false,
     ): Promise<{ data: AuthorizationSnapshot; error: string | null }> {
       const key = `${userId}:${campusId ?? 'global'}`;
-
-      console.warn('[AUTH] load() called', { userId, campusId, key, refresh, cacheHit: cache.has(key) });
+      let request = cache.get(key);
 
       if (refresh) {
         cache.delete(key);
-        console.warn('[AUTH] refresh=true -> cache cleared', { key });
+        request = undefined;
       }
 
-      // TEMP EXPERIMENT (cache disabled): always build a fresh request — never read the cache.
-      const request = (async () => {
+      if (!request) {
+        request = (async () => {
           // 1) user_roles query
           const { data: userRoleRows, error: userRoleError } = await client
             .from('user_roles')
             .select('role_id,campus_id,expires_at,roles(id,key,name)')
             .eq('user_id', userId);
-          console.warn('[AUTH] 1) user_roles query', { userRoleError, userRoleRows });
-
           if (userRoleError || !userRoleRows) throw userRoleError ?? new Error('user_roles returned no data');
 
           // 2) roles array
@@ -71,13 +67,9 @@ export function createAuthorizationService(client: SupercampusSupabaseClient) {
                 ? [{ id: a.roles.id, key: a.roles.key, name: a.roles.name, campusId: a.campus_id, organizationId: null }]
                 : [],
             );
-          console.warn('[AUTH] 2) roles array', { roles });
-
           if (!roles.length) return empty(campusId);
 
           const ids = roles.map((r) => r.id);
-          console.warn('[AUTH] role ids used for grants', { ids });
-
           // 3+4) role_permissions + role_features queries
           const [grantsResult, assignmentsResult] = await Promise.all([
             client.from('role_permissions').select('permissions(key)').in('role_id', ids),
@@ -86,9 +78,6 @@ export function createAuthorizationService(client: SupercampusSupabaseClient) {
               .select('feature_registry(key,name,description,module_group,icon,route,sort_order,is_enabled)')
               .in('role_id', ids),
           ]);
-          console.warn('[AUTH] 3) role_permissions query', { error: grantsResult.error, grants: grantsResult.data });
-          console.warn('[AUTH] 4) role_features query', { error: assignmentsResult.error, assignments: assignmentsResult.data });
-
           if (grantsResult.error || assignmentsResult.error) {
             throw grantsResult.error ?? assignmentsResult.error ?? new Error('grant queries failed');
           }
@@ -112,7 +101,7 @@ export function createAuthorizationService(client: SupercampusSupabaseClient) {
               });
             }
           }
-                    // Super Admin bypass: super_admin is excluded from the role_features
+          // Super Admin bypass: super_admin is excluded from the role_features
           // seed (`where r.key <> 'super_admin'`), so the role_features join
           // returns zero features for this role. Query feature_registry directly
           // to grant ALL enabled features rather than relying on the join.
@@ -139,9 +128,6 @@ export function createAuthorizationService(client: SupercampusSupabaseClient) {
             }
           }
 
-          console.warn('[AUTH] 5) permissions array', { permissions });
-          console.warn('[AUTH] 6) features array', { featureKeys: [...features.values()].map((f) => f.key) });
-
           return {
             roles,
             permissions,
@@ -149,18 +135,11 @@ export function createAuthorizationService(client: SupercampusSupabaseClient) {
             campusId,
           };
         })();
-
-      // TEMP EXPERIMENT (cache disabled): do not store the promise in the cache map.
-      void request;
+        cache.set(key, request);
+      }
 
       try {
-        const result = await request;
-        console.warn('[AUTH] load() result', {
-          roles: result.roles.map((r) => r.key),
-          permissions: result.permissions,
-          features: result.features.map((f) => f.key),
-        });
-        return { data: result, error: null };
+        return { data: await request, error: null };
       } catch (error) {
         cache.delete(key);
         console.error('AUTH LOAD FAILED', error);

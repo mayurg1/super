@@ -42,7 +42,8 @@ export function CampaignSection({ projectId, isCreator }: { projectId: string; i
       <div className="sc-campaign-progress"><div className="sc-campaign-bar" style={{ width: `${Math.min(pct, 100)}%` }}></div></div>
       <p>Raised {c.raisedTotal} {c.currency} of {c.goalAmount} {c.currency} ({pct}%) · {c.contributorCount} contributor(s)</p>
       <Input label="Contribute (amount)" type="number" min="1" value={amount} onChange={(e) => setAmount(e.target.value)} />
-      <Button variant="primary" size="sm" disabled={!amount} onClick={() => void contribute()}>Contribute</Button>
+      <Button variant="primary" size="sm" disabled title="Online contributions coming soon — payment integration in progress." onClick={() => void contribute()}>Contribute</Button>
+      <p className="sc-coming-soon" role="note">Online contributions coming soon — payment integration in progress.</p>
       {contribMsg && <p className="sc-project-meta" role="alert">{contribMsg}</p>}
       {updates.length > 0 && <section><h4>Updates</h4>{updates.map((u) => <p key={u.id}><strong>{u.author.displayName}:</strong> {u.body}</p>)}</section>}
       {isCreator && (

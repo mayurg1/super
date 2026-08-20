@@ -13,7 +13,7 @@ export { createRealtime, type RealtimeClient } from './realtime.js';
 export { isSupabaseError, type SupabaseError } from './helpers.js';
 export { createAuthService, type AuthCredentials, type AuthResult, type SupabaseAuthService } from './auth.js';
 export { AuthProvider, useAuth, type AuthContextValue } from './authProvider.js';
-export { createProfileService, type Profile, type ProfileEducation, type ProfileEducationInput, type ProfileExperience, type ProfileExperienceInput, type ProfileResult, type ProfileService, type ProfileSkill, type ProfileUpdate, type Skill, type UserSettings, type UserSettingsUpdate } from './profile.js';
+export { createProfileService, PRIVACY_CONSENT_STORAGE_KEY, type Profile, type ProfileEducation, type ProfileEducationInput, type ProfileExperience, type ProfileExperienceInput, type ProfileResult, type ProfileService, type ProfileSkill, type ProfileUpdate, type Skill, type UserSettings, type UserSettingsUpdate } from './profile.js';
 export { ProfileProvider, useProfile, type ProfileContextValue } from './profileProvider.js';
 export { createAuthorizationService, type AuthorizationFeature, type AuthorizationRole, type AuthorizationService, type AuthorizationSnapshot } from './authorization.js';
 export { AuthorizationProvider, useAuthorization, useCurrentCampus, useFeatures, useHasFeature, useHasPermission, usePermissions, useRoles, type AuthorizationContextValue } from './authorizationProvider.js';
@@ -74,6 +74,7 @@ export type {
   CreateCampaignInput, UpdateCampaignInput, CampaignResultGeneric,
   CampaignBrowseResult, CampaignCursor, CampaignQuery, CampaignPage,
 } from './campaigns.js';
-export { createDirectoryService, type DirectoryService, type DirectoryProfile, type DirectoryResult, type DirectoryQuery, type DirectoryPage } from './directory.js';
+export { createDirectoryService, type DirectoryService, type DirectoryProfile, type PublicProfile, type DirectoryResult, type DirectoryQuery, type DirectoryPage } from './directory.js';
+export { createChatService, type ChatService, type ChatConversation, type ChatMessage, type ChatResult } from './chat.js';
 export { createJobService, type JobService, type JobResult, type JobDetail, type JobQuery, type JobPage, type CreateJobInput, type JobResultGeneric } from './jobs.js';
 export { createEventService, type EventService, type EventResult, type EventQuery, type EventPage, type CreateEventInput, type EventResultGeneric } from './events.js';

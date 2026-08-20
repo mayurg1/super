@@ -18,7 +18,6 @@ function setMember(current: ReadonlySet<string>, id: string, present: boolean): 
 
 export function MarketplaceProvider({ children }: { children: React.ReactNode }): React.ReactElement {
   const client = useSupabase();
-  console.log('MarketplaceProvider rendered'); // TEMP TASK2
   const { user } = useAuth();
   const { profile } = useProfile();
   const service = useMemo(() => createMarketplaceService(client), [client]);

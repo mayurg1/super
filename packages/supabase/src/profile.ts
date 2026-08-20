@@ -2,8 +2,10 @@ import type { User } from '@supabase/supabase-js';
 import type { SupercampusSupabaseClient } from './client.js';
 import type { Tables, TablesInsert, TablesUpdate } from './database.types.js';
 
+export const PRIVACY_CONSENT_STORAGE_KEY = 'sc_pending_privacy_consent';
+
 export type Profile = Tables<'profiles'>;
-export type ProfileUpdate = Pick<TablesUpdate<'profiles'>, 'avatar_asset_id' | 'bio' | 'business_name' | 'campus_id' | 'department_id' | 'designation' | 'directory_visibility' | 'display_name' | 'family_name' | 'given_name' | 'graduation_year' | 'handle' | 'phone' | 'program_id' | 'residency_type'>;
+export type ProfileUpdate = Pick<TablesUpdate<'profiles'>, 'avatar_asset_id' | 'bio' | 'business_name' | 'campus_id' | 'department_id' | 'designation' | 'directory_visibility' | 'display_name' | 'family_name' | 'given_name' | 'graduation_year' | 'handle' | 'phone' | 'privacy_consent_at' | 'program_id' | 'residency_type'>;
 export type ProfileResult<T> = { data: T; error: null } | { data: null; error: string };
 
 export type ProfileEducation = Tables<'profile_educations'>;

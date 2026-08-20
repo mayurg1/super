@@ -28,6 +28,27 @@ export interface DirectoryPage {
   nextCursor: { createdAt: string } | null;
 }
 
+/** Richer read model for the public profile-detail page (RLS-gated). */
+export interface PublicProfile {
+  id: string;
+  displayName: string;
+  handle: string;
+  givenName: string | null;
+  familyName: string | null;
+  headline: string | null;
+  bio: string | null;
+  avatarAssetId: string | null;
+  graduationYear: number | null;
+  designation: string | null;
+  departmentId: string | null;
+  departmentName: string | null;
+  programId: string | null;
+  programName: string | null;
+  campusId: string | null;
+  roleKey: string | null;
+  roleLabel: string | null;
+}
+
 export type DirectoryResult<T> = { data: T; error: null } | { data: null; error: string };
 
 const DEFAULT_PAGE_SIZE = 20;
@@ -58,33 +79,56 @@ function toProfile(row: ProfileRow & { user_roles?: Array<{ roles: { key: string
   };
 }
 
+/** Single row shape returned by the list_directory_profiles RPC (jsonb). */
+interface DirectoryRpcRow {
+  profile_id: string;
+  display_name: string;
+  handle: string;
+  given_name: string | null;
+  family_name: string | null;
+  bio: string | null;
+  avatar_asset_id: string | null;
+  graduation_year: number | null;
+  directory_visibility: string;
+  campus_id: string | null;
+  created_at: string;
+  role_key: string | null;
+  role_label: string | null;
+}
+
+function toProfileFromRpc(row: DirectoryRpcRow): DirectoryProfile {
+  return {
+    id: row.profile_id,
+    displayName: row.display_name,
+    handle: row.handle,
+    givenName: row.given_name,
+    familyName: row.family_name,
+    bio: row.bio,
+    avatarAssetId: row.avatar_asset_id,
+    graduationYear: row.graduation_year,
+    directoryVisibility: row.directory_visibility,
+    roleKey: row.role_key && VISIBLE_ROLES.includes(row.role_key) ? row.role_key : null,
+  };
+}
+
 export function createDirectoryService(client: SupercampusSupabaseClient) {
   return {
     async getPeopleByRole(role: string, query: DirectoryQuery): Promise<DirectoryResult<DirectoryPage>> {
       const limit = Math.max(1, Math.min(query.limit ?? DEFAULT_PAGE_SIZE, 50));
-      let builder = client
-        .from('profiles')
-        .select('*, user_roles!user_id!inner(roles!inner(key))')
-        .not('deleted_at', 'is', null)
-        .eq('user_roles.roles.key', role)
-        .order('created_at', { ascending: false })
-        .limit(limit + 1);
-
-      if (query.campusId) builder = builder.eq('campus_id', query.campusId);
-      if (query.cursor) builder = builder.lt('created_at', query.cursor.createdAt);
-      // RLS: user_roles_read restricts to self (user_id=auth.uid()) or rbac.manage.
-      // Using !inner will therefore only return profiles whose user_roles the viewer can read.
-      // For non-admin users this effectively returns zero rows for others' roles.
-      // This is a known RLS limitation — a security-definer function would be needed.
-
-      const { data, error } = await builder;
-      if (error || !data) return { data: null, error: dirError() };
-
-      const visible = data.slice(0, limit);
+      const { data, error } = await client.rpc('list_directory_profiles', {
+        p_role: role,
+        p_campus_id: query.campusId ?? undefined,
+        p_search: query.search?.trim() || undefined,
+        p_before: query.cursor?.createdAt ?? undefined,
+        p_limit: limit + 1,
+      });
+      if (error || !Array.isArray(data)) return { data: null, error: dirError() };
+      const rows = data as unknown as DirectoryRpcRow[];
+      const visible = rows.slice(0, limit);
       if (visible.length === 0) return { data: { profiles: [], nextCursor: null }, error: null };
-      const next = data.length > limit ? visible.at(-1) : undefined;
+      const next = rows.length > limit ? visible.at(-1) : undefined;
       return {
-        data: { profiles: visible.map((r) => toProfile(r)), nextCursor: next ? { createdAt: next.created_at } : null },
+        data: { profiles: visible.map((r) => toProfileFromRpc(r)), nextCursor: next ? { createdAt: next.created_at } : null },
         error: null,
       };
     },
@@ -92,6 +136,55 @@ export function createDirectoryService(client: SupercampusSupabaseClient) {
       const { data, error } = await client.from('profiles').select('*').eq('id', profileId).single();
       if (error || !data) return { data: null, error: dirError() };
       return { data: toProfile(data), error: null };
+    },
+    async getPublicProfile(profileId: string): Promise<DirectoryResult<PublicProfile | null>> {
+      const { data: row, error } = await client.from('profiles').select('*').eq('id', profileId).maybeSingle();
+      if (error) return { data: null, error: dirError() };
+      if (!row) return { data: null, error: null };
+
+      let departmentName: string | null = null;
+      if (row.department_id) {
+        const { data: dept } = await client.from('departments').select('name').eq('id', row.department_id).maybeSingle();
+        departmentName = dept?.name ?? null;
+      }
+      let programName: string | null = null;
+      if (row.program_id) {
+        const { data: prog } = await client.from('programs').select('name').eq('id', row.program_id).maybeSingle();
+        programName = prog?.name ?? null;
+      }
+
+      // Role resolution: user_roles_read is self/admin-only, so a normal viewer
+      // cannot read someone else's user_roles. Resolve the visible directory role
+      // through the SECURITY DEFINER RPC instead (migration 0036).
+      let roleKey: string | null = null;
+      let roleLabel: string | null = null;
+      const { data: roleJson } = await client.rpc('get_directory_user_role', { p_user_id: profileId });
+      const role = (roleJson ?? null) as { role_key?: string | null; role_label?: string | null } | null;
+      roleKey = role?.role_key ?? null;
+      roleLabel = role?.role_label ?? null;
+
+      return {
+        data: {
+          id: row.id,
+          displayName: row.display_name,
+          handle: row.handle,
+          givenName: row.given_name,
+          familyName: row.family_name,
+          headline: row.headline,
+          bio: row.bio,
+          avatarAssetId: row.avatar_asset_id,
+          graduationYear: row.graduation_year,
+          designation: row.designation,
+          departmentId: row.department_id,
+          departmentName,
+          programId: row.program_id,
+          programName,
+          campusId: row.campus_id,
+          roleKey,
+          roleLabel,
+        },
+        error: null,
+      };
     },
     async getConnectionRequests(userId: string): Promise<DirectoryResult<{ id: string; userId: string; requestedBy: string; status: string }[]>> {
       const { data, error } = await client

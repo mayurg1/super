@@ -92,9 +92,10 @@ export function CartPanel(): React.ReactElement {
             Clear cart
           </Button>
         )}
-        <Button variant="primary" onClick={() => void handleCheckout()} disabled={!canCheckout || placing}>
+        <Button variant="primary" onClick={() => void handleCheckout()} disabled title="Ordering coming soon — payment integration in progress.">
           {placing ? 'Placing…' : 'Place order'}
         </Button>
+        <p className="sc-coming-soon" role="note">Ordering coming soon — payment integration in progress.</p>
       </div>
     </Card>
   );
